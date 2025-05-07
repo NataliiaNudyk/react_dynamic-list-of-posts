@@ -68,6 +68,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={`input ${inputNameError ? 'is-danger' : ''}`}
             value={inputName}
+            disabled={isLoading}
             onChange={event => {
               setInputName(event.target.value);
               setInputNameError(false);

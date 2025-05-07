@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { addComments, deleteComments, getComments } from '../api/comments';
+import * as CommentService from '../api/comments';
 import { Comment, CommentData } from '../types/Comment';
 import { Post } from '../types/Post';
 
@@ -36,7 +36,7 @@ export const PostDetails: React.FC<Props> = ({
 
   useEffect(() => {
     setIsLoading(true);
-    getComments(currentPost.id)
+    CommentService.getComments(currentPost.id)
       .then(setComments)
       .catch(() => {
         setErrorMessage('Something went wrong!');
@@ -46,13 +46,13 @@ export const PostDetails: React.FC<Props> = ({
       });
   }, [currentPost?.id, setErrorMessage, setIsLoading]);
 
-  const addComment = (data: CommentData) => {
+  const handleAddComment = (data: CommentData) => {
     const { name, email, body } = data;
 
     setLoadingComments(true);
 
     if (currentPost) {
-      addComments({ ...data, postId: currentPost.id })
+      CommentService.addComment({ ...data, postId: currentPost.id })
         .then(newComment => {
           setComments(currentComment => [...currentComment, newComment]);
           setInputBody('');
@@ -69,8 +69,8 @@ export const PostDetails: React.FC<Props> = ({
     }
   };
 
-  const deleteComment = (commentId: number) => {
-    deleteComments(commentId)
+  const handleDeleteComment = (commentId: number) => {
+    CommentService.deleteComment(commentId)
       .then(() => {
         setComments(currentComment =>
           currentComment.filter(comment => comment.id !== commentId),
@@ -125,7 +125,7 @@ export const PostDetails: React.FC<Props> = ({
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
-                      onClick={() => deleteComment(comment.id)}
+                      onClick={() => handleDeleteComment(comment.id)}
                     >
                       delete button
                     </button>
@@ -151,7 +151,7 @@ export const PostDetails: React.FC<Props> = ({
 
           {writeCommentBtn && (
             <NewCommentForm
-              addComment={addComment}
+              addComment={handleAddComment}
               setInputName={setInputName}
               setInputEmail={setInputEmail}
               setInputBody={setInputBody}

@@ -5,10 +5,10 @@ export const getComments = (postId: number | null) => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 
-export function addComments(data: Omit<Comment, 'id'>): Promise<Comment> {
+export function addComment(data: Omit<Comment, 'id'>): Promise<Comment> {
   return client.post<Comment>('/comments', data);
 }
 
-export function deleteComments(commentId: number) {
+export function deleteComment(commentId: number) {
   return client.delete(`/comments/${commentId}`);
 }
